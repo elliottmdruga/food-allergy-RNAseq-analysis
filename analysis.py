@@ -60,7 +60,7 @@ except FileNotFoundError:
 """----------FILTERING AND PREPROCESSING----------"""
 
 # Low-expression cutoff for filtering out genes
-count_cutoff = 10000 #TODO - add as an optional command line parameter
+count_cutoff = 20 #TODO - add as an optional command line parameter
 
 # Set gene_id and gene_name as index columns
 counts = counts.set_index(['gene_id', 'gene_name'])
@@ -71,14 +71,14 @@ counts = counts.round().astype(int)
 # Filter out low-count genes according to cutoff
 counts = counts.loc[counts.sum(axis=1) >= count_cutoff, :]
 
-print(counts.head())
-
 """----------ANALYSIS----------"""
+
 """
-dds = DeseqDataSet(counts=counts, metadata=meta, design="~ sex + group")
+dds = DeseqDataSet(counts=counts, metadata=meta, design="~ group")
 dds.deseq2()
-stats = DeseqStats(dds, contrast=["group", "FA", "NA"])
+stats = DeseqStats(dds, contrast=["group", "NA", "FA_PN", "FA_MF"])
 stats.summary()
 res = stats.results_df
 """
+
 """----------VISUALIZATION----------"""
