@@ -12,12 +12,15 @@ from pydeseq2.ds import DeseqStats
 import gseapy as gp
 
 
-# Arguments that will print the usage message, and the message itself
+# Arguments that will print the overview and usage message, and those messages
 help_strings = ["h", "help", "-h", "-help", "--h", "--help"]
+overview_message = ("Script for producing downstream analyses of RNAseq data processed by nf-core"
+                    " RNAseq pipeline with star-salmon. Generates a variety of visualizations.")
 usage_message = "USAGE: python analysis.py [counts tsv file] [metadata tsv file]"
 
 # Check if the first argument provided is a help string, print usage if so
 if len(sys.argv) > 1 and sys.argv[1] in help_strings:
+    print(overview_message)
     print(usage_message)
     sys.exit()
 
