@@ -11,6 +11,10 @@ from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 import gseapy as gp
 
+
+# want matplotlib for volcano plots
+# want seaborn clustermap for heatmaps
+
 """----------INPUT PROCESSING----------"""
 
 # Arguments that will print the overview and usage message, and those messages
@@ -80,6 +84,9 @@ meta = meta.loc[counts.index]
 
 """----------ANALYSIS----------"""
 
+# Create deseq dataset from counts and metadata
+# Using group study design - no other significant varaibles to consider
+# Maybe make this more variable based on input?
 dds = DeseqDataSet(counts=counts, metadata=meta, design="~ group")
 dds.deseq2()
 stats = DeseqStats(dds, contrast=["group", "FA_NA", "FA_PN"])
