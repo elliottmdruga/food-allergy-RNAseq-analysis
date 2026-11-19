@@ -53,17 +53,16 @@ except FileNotFoundError:
     print(usage_message)
     sys.exit()
 
-
-
-
-
 """----------FILTERING AND PREPROCESSING----------"""
 
 # Low-expression cutoff for filtering out genes
 count_cutoff = 20 #TODO - add as an optional command line parameter
 
+# Get rid of gene_id column - not needed
+counts = counts.drop(columns=["gene_id"])
+
 # Set gene_id and gene_name as index columns
-counts = counts.set_index(['gene_id', 'gene_name'])
+counts = counts.set_index(['gene_name'])
 
 # Convert raw counts to integers for analysis in Deseq2
 counts = counts.round().astype(int)
@@ -71,14 +70,20 @@ counts = counts.round().astype(int)
 # Filter out low-count genes according to cutoff
 counts = counts.loc[counts.sum(axis=1) >= count_cutoff, :]
 
+# Transpose counts matrix for use in Deseq2
+counts = counts.T
+# Rename index column
+counts.index.name = 'sample'
+
+# Ensure index column is the same for both counts and metadata
+meta = meta.loc[counts.index]
+
 """----------ANALYSIS----------"""
 
-"""
 dds = DeseqDataSet(counts=counts, metadata=meta, design="~ group")
 dds.deseq2()
-stats = DeseqStats(dds, contrast=["group", "NA", "FA_PN", "FA_MF"])
+stats = DeseqStats(dds, contrast=["group", "FA_NA", "FA_PN"])
 stats.summary()
 res = stats.results_df
-"""
 
 """----------VISUALIZATION----------"""
