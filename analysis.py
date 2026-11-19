@@ -6,10 +6,11 @@ Should work with any usual output from the star-salmon pipeline
 # Imports
 import sys
 import numpy as np
+import pandas as pd
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 import gseapy as gp
-import pandas as pd
+
 
 # Arguments that will print the usage message, and the message itself
 help_strings = ["h", "help", "-h", "-help", "--h", "--help"]
@@ -39,6 +40,13 @@ except FileNotFoundError:
     print(usage_message)
     sys.exit()
 
-gene_names = counts.pop("gene_name")
+# Read metadata file into a dataframe
+try:
+    meta = pd.read_csv(metadata_file, index_col=0)
+# Print a message if file is not found
+except FileNotFoundError:
+    print(f"{metadata_file} not found. Please provide a valid counts csv file.")
+    print(usage_message)
+    sys.exit()
 
 print(counts.head())
