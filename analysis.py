@@ -11,6 +11,7 @@ from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 import gseapy as gp
 
+"""----------INPUT PROCESSING----------"""
 
 # Arguments that will print the overview and usage message, and those messages
 help_strings = ["h", "help", "-h", "-help", "--h", "--help"]
@@ -36,7 +37,7 @@ metadata_file = sys.argv[2]
 
 # Read counts file into a dataframe
 try:
-    counts = pd.read_csv(counts_file, sep="\t", index_col=0)
+    counts = pd.read_csv(counts_file, sep="\t")
 # Print a message if file is not found
 except FileNotFoundError:
     print(f"{counts_file} not found. Please provide a valid counts tsv file.")
@@ -52,4 +53,32 @@ except FileNotFoundError:
     print(usage_message)
     sys.exit()
 
+
+
+
+
+"""----------FILTERING AND PREPROCESSING----------"""
+
+# Low-expression cutoff for filtering out genes
+count_cutoff = 10000 #TODO - add as an optional command line parameter
+
+# Set gene_id and gene_name as index columns
+counts = counts.set_index(['gene_id', 'gene_name'])
+
+# Convert raw counts to integers for analysis in Deseq2
+counts = counts.round().astype(int)
+
+# Filter out low-count genes according to cutoff
+counts = counts.loc[counts.sum(axis=1) >= count_cutoff, :]
+
 print(counts.head())
+
+"""----------ANALYSIS----------"""
+"""
+dds = DeseqDataSet(counts=counts, metadata=meta, design="~ sex + group")
+dds.deseq2()
+stats = DeseqStats(dds, contrast=["group", "FA", "NA"])
+stats.summary()
+res = stats.results_df
+"""
+"""----------VISUALIZATION----------"""
