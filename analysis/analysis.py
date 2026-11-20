@@ -25,7 +25,7 @@ from sklearn.preprocessing import StandardScaler
 help_strings = ["h", "help", "-h", "-help", "--h", "--help"]
 overview_message = ("Script for producing downstream analyses of RNAseq data processed by nf-core"
                     " RNAseq pipeline with star-salmon. Generates a variety of visualizations.")
-usage_message = "USAGE: python analysis.py [counts tsv file] [metadata tsv file]"
+usage_message = "USAGE: python analysis.py [counts tsv file] [metadata tsv file] [config file]"
 
 # Check if the first argument provided is a help string, print usage if so
 if len(sys.argv) > 1 and sys.argv[1] in help_strings:
@@ -46,10 +46,10 @@ metadata_file = sys.argv[2]
 #TODO - make these optional arguments to the program
 
 # Low-expression cutoff for filtering out genes
-count_cutoff = 100
+count_cutoff = 10
 # Whether to save results and the file path
 save_results = False
-output_path = "./"
+output_path = "../"
 
 # Read counts file into a dataframe
 try:
